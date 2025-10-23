@@ -27,6 +27,7 @@ interface ConversaAgrupada {
   total_mensagens: number;
   nao_lidas: number;
   status: string;
+  statusconversa?: string | null;
   mensagens: MensagemWhatsApp[];
 }
 
@@ -122,12 +123,12 @@ export const useWhatsAppConversations = () => {
   };
 
   // Agrupar mensagens por conversa_id para criar conversas dinâmicas
-  const agruparMensagensPorConversa = (mensagens: MensagemWhatsApp[]): ConversaAgrupada[] => {
+  const agruparMensagensPorConversa = (mensagens: any[]): ConversaAgrupada[] => {
     const conversasMap = new Map<string, ConversaAgrupada>();
 
     mensagens.forEach(mensagem => {
       const conversaId = mensagem.conversa_id;
-      
+
       if (!conversasMap.has(conversaId)) {
         // Criar nova conversa
         conversasMap.set(conversaId, {
@@ -139,23 +140,25 @@ export const useWhatsAppConversations = () => {
           total_mensagens: 0,
           nao_lidas: 0,
           status: 'ativa',
+          statusconversa: mensagem.statusconversa || null,
           mensagens: []
         });
       }
 
       const conversa = conversasMap.get(conversaId)!;
-      
+
       // Adicionar mensagem à conversa
       conversa.mensagens.push(mensagem);
       conversa.total_mensagens++;
-      
+
       // Atualizar última mensagem se for mais recente
       if (new Date(mensagem.data_hora) > new Date(conversa.ultima_atividade)) {
         conversa.ultima_mensagem = mensagem.mensagem;
         conversa.ultima_atividade = mensagem.data_hora;
         conversa.nome_contato = mensagem.nome_contato || mensagem.numero;
+        conversa.statusconversa = mensagem.statusconversa || conversa.statusconversa;
       }
-      
+
       // Contar mensagens não lidas (received)
       if (mensagem.direcao === 'received' && mensagem.status_entrega !== 'read') {
         conversa.nao_lidas++;
@@ -163,7 +166,7 @@ export const useWhatsAppConversations = () => {
     });
 
     // Converter Map para Array e ordenar por última atividade
-    return Array.from(conversasMap.values()).sort((a, b) => 
+    return Array.from(conversasMap.values()).sort((a, b) =>
       new Date(b.ultima_atividade).getTime() - new Date(a.ultima_atividade).getTime()
     );
   };

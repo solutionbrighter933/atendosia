@@ -648,6 +648,13 @@ const Conversations: React.FC = () => {
                           {conversa.ultima_mensagem}
                         </p>
                       )}
+                      {conversationType === 'whatsapp' && conversa.statusconversa && (
+                        <div className="mt-2 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 border-l-2 border-blue-500 dark:border-blue-400 rounded">
+                          <p className="text-xs text-blue-700 dark:text-blue-300 font-medium">
+                            {conversa.statusconversa}
+                          </p>
+                        </div>
+                      )}
                       <div className="flex items-center space-x-2 mt-1">
                         <span className="text-xs text-gray-400 dark:text-gray-500">
                           {conversa.total_mensagens} mensagens

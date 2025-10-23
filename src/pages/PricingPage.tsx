@@ -277,17 +277,25 @@ const PricingPage: React.FC = () => {
                 )}
 
                 <div className="text-center">
-                  <div
-                    className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6 ${
-                      plan.is_popular
-                        ? 'bg-gradient-to-br from-blue-500 to-cyan-500'
-                        : 'bg-gradient-to-br from-gray-600 to-gray-700'
-                    }`}
-                  >
-                    <Zap className="w-8 h-8 text-white" />
+                  <div className="flex items-center justify-center mb-6">
+                    <img
+                      src={
+                        plan.slug === 'starter' ? '/Atendos Starter Logo.png' :
+                        plan.slug === 'plus' ? '/Atendos Plus Logo.png' :
+                        plan.slug === 'pro' ? '/Atendos Pro Logo.png' :
+                        undefined
+                      }
+                      alt={plan.name}
+                      className="h-16 w-auto object-contain"
+                    />
                   </div>
 
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">{plan.name}</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
+                    {plan.slug === 'starter' ? 'Starter' :
+                     plan.slug === 'plus' ? 'Plus' :
+                     plan.slug === 'pro' ? 'Pro' :
+                     plan.name}
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-6 min-h-[48px]">{plan.description}</p>
 
                   <div className="mb-6">

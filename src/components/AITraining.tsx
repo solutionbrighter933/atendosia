@@ -37,6 +37,7 @@ interface WhatsAppAgent {
   llm: string | null;
   ai_prompt: string;
   is_ai_active: boolean;
+  tempodeentrega: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -93,7 +94,8 @@ const AITraining: React.FC<AITrainingProps> = ({ setActiveSection, setSettingsTa
     phone_number: '',
     llm: 'gpt-4o',
     ai_prompt: 'Você é um assistente virtual prestativo e eficiente.',
-    is_ai_active: true
+    is_ai_active: true,
+    tempodeentrega: ''
   });
   const [savingEdit, setSavingEdit] = useState(false);
   
@@ -178,7 +180,7 @@ const AITraining: React.FC<AITrainingProps> = ({ setActiveSection, setSettingsTa
 
       const { data: agentsData, error: agentsError } = await supabase
         .from('whatsapp_numbers')
-        .select('id, display_name, phone_number, connection_status, agent_instance_id, agent_token, agent_phone_number, nomeagente, llm, ai_prompt, is_ai_active, created_at, updated_at')
+        .select('id, display_name, phone_number, connection_status, agent_instance_id, agent_token, agent_phone_number, nomeagente, llm, ai_prompt, is_ai_active, tempodeentrega, created_at, updated_at')
         .eq('organization_id', profile.organization_id)
         .not('agent_instance_id', 'is', null) // Apenas agentes com credenciais próprias
         .order('created_at', { ascending: false });
@@ -569,7 +571,8 @@ const AITraining: React.FC<AITrainingProps> = ({ setActiveSection, setSettingsTa
       phone_number: agent.agent_phone_number || agent.phone_number || '',
       llm: agent.llm || 'gpt-4o',
       ai_prompt: agent.ai_prompt || 'Você é um assistente virtual prestativo e eficiente.',
-      is_ai_active: agent.is_ai_active
+      is_ai_active: agent.is_ai_active,
+      tempodeentrega: agent.tempodeentrega || ''
     });
     setShowEditModal(true);
     setError(null);
@@ -601,6 +604,7 @@ const AITraining: React.FC<AITrainingProps> = ({ setActiveSection, setSettingsTa
           llm: editForm.llm,
           ai_prompt: editForm.ai_prompt.trim(),
           is_ai_active: editForm.is_ai_active,
+          tempodeentrega: editForm.tempodeentrega.trim() || null,
           updated_at: new Date().toISOString()
         })
         .eq('id', editingAgentData.id)
@@ -1682,6 +1686,22 @@ const AITraining: React.FC<AITrainingProps> = ({ setActiveSection, setSettingsTa
                       placeholder="Descreva como o agente deve se comportar..."
                     />
                   )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Definir Estimativa de Entrega
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.tempodeentrega}
+                    onChange={(e) => setEditForm({ ...editForm, tempodeentrega: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="Ex: 2-3 dias, 24 horas, 7 dias úteis"
+                  />
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    Informe o tempo estimado de entrega para este agente
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2">
