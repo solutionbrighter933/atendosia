@@ -1,0 +1,25 @@
+import { useEffect } from 'react';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useFrameworkReady } from '../hooks/useFrameworkReady';
+import { metaPixel } from '../lib/metaPixel';
+
+export default function RootLayout() {
+  useFrameworkReady();
+
+  useEffect(() => {
+    metaPixel.init();
+  }, []);
+
+  return (
+    <>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+        <Stack.Screen name="checkout" />
+        <Stack.Screen name="order-confirmation" />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      <StatusBar style="auto" />
+    </>
+  );
+}
