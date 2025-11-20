@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Image, ActivityIndicator } from 'react-native';
 import { ArrowLeft, Trash2, Plus, Minus } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const getSessionId = () => {
   if (typeof window !== 'undefined') {
@@ -146,7 +150,7 @@ export default function Cart() {
               {cartItems.map((item) => (
                 <View key={item.id} style={styles.cartItem}>
                   <Image
-                    source={require('@/assets/images/br-11134103-7r98o-m148lhgwk4uoda.webp')}
+                    source={require('@/assets/images/br-11134207-81z1k-mgcf9ald0pvrcd.webp')}
                     style={styles.productImage}
                     resizeMode="cover"
                   />

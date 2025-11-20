@@ -2,14 +2,9 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useFrameworkReady } from '../hooks/useFrameworkReady';
-import { metaPixel } from '../lib/metaPixel';
 
 export default function RootLayout() {
   useFrameworkReady();
-
-  useEffect(() => {
-    metaPixel.init();
-  }, []);
 
   return (
     <>

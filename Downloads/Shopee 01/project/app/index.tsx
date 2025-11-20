@@ -1,9 +1,13 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, Platform, Image, Modal, Pressable, Linking } from 'react-native';
 import { ArrowLeft, ShoppingCart, MoveVertical as MoreVertical, Heart, Truck, ChevronRight, Star, ChevronUp, ChevronDown, MessageCircle, Play, CircleCheck as CheckCircle, X, ThumbsUp } from 'lucide-react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { supabase } from '@/lib/supabase';
-import { metaPixel } from '@/lib/metaPixel';
+import { createClient } from '@supabase/supabase-js';
+import { useCallback } from 'react';
+
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 const getSessionId = () => {
   if (typeof window !== 'undefined') {
@@ -20,6 +24,7 @@ const getSessionId = () => {
 const FLAVORS = ['Morango', 'Melancia', 'Maçã Verde'];
 
 const PRODUCT_IMAGES = [
+  require('@/assets/images/br-11134207-81z1k-mgcf9ald0pvrcd.webp'),
   require('@/assets/images/br-11134207-81z1k-mgcf9alczbbb80.webp'),
   require('@/assets/images/br-11134207-81z1k-mgcf9ald3j0n54.webp'),
   require('@/assets/images/br-11134207-7r98o-m2ba0e8a58w6ec.webp'),
@@ -81,13 +86,6 @@ export default function ProductLanding() {
 
       if (error) throw error;
       await loadCartCount();
-
-      metaPixel.trackAddToCart({
-        content_name: 'Suplemento Alimentar Gummy Hair - 60 Unidades',
-        content_ids: ['gummy-hair-60'],
-        value: 19.87,
-        currency: 'BRL'
-      });
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
@@ -204,12 +202,6 @@ export default function ProductLanding() {
     console.log('Botão Compre Agora clicado!');
     console.log('Sabor selecionado:', selectedFlavor);
     try {
-      metaPixel.trackInitiateCheckout({
-        value: 19.87,
-        currency: 'BRL',
-        num_items: 1
-      });
-
       router.push({
         pathname: '/checkout',
         params: {
@@ -228,7 +220,7 @@ export default function ProductLanding() {
       <View style={[styles.container, isDesktop && { width: maxWidth, alignSelf: 'center' }]}>
         <TouchableOpacity style={styles.logoHeader} onPress={() => Linking.openURL('https://shopee.com.br/web')}>
           <Image
-            source={require('@/assets/images/joigfjboigj.jpg')}
+            source={require('@/assets/images/joigfjboigj copy.jpg')}
             style={styles.logoImage}
             resizeMode="cover"
           />
@@ -964,7 +956,7 @@ export default function ProductLanding() {
 
         <View style={styles.bottomBar}>
           <TouchableOpacity style={styles.bottomButton} onPress={() => router.push('/chat')}>
-            <Image source={require('@/assets/images/1(1).png')} style={{ width: 20, height: 20 }} />
+            <Image source={require('@/assets/images/1(1) copy.png')} style={{ width: 20, height: 20 }} />
             <Text style={styles.bottomButtonText}>Conversar agora</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomButton} onPress={handleAddToCart}>

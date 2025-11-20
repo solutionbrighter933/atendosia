@@ -2,8 +2,11 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Image, 
 import { ArrowLeft, MapPin, Package, Truck, CreditCard, Info } from 'lucide-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { metaPixel } from '@/lib/metaPixel';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function OrderConfirmation() {
   const router = useRouter();
@@ -73,7 +76,7 @@ export default function OrderConfirmation() {
 
           <View style={styles.productRow}>
             <Image
-              source={require('@/assets/images/br-11134103-7r98o-m148lhgwk4uoda.webp')}
+              source={require('@/assets/images/br-11134207-81z1k-mgcf9ald0pvrcd.webp')}
               style={styles.productImage}
               resizeMode="cover"
             />
@@ -160,7 +163,7 @@ export default function OrderConfirmation() {
           >
             <View style={styles.pixIconContainer}>
               <Image
-                source={require('@/assets/images/20250919160711_logo-pix-icone-1024.png')}
+                source={require('@/assets/images/20250919160711_logo-pix-icone-1024 copy.png')}
                 style={styles.pixLogo}
                 resizeMode="contain"
               />
@@ -309,11 +312,6 @@ export default function OrderConfirmation() {
             onPress={async () => {
               if (processingOrder) return;
 
-              metaPixel.trackAddPaymentInfo({
-                value: totalPrice,
-                currency: 'BRL'
-              });
-
               setProcessingOrder(true);
               try {
                 const fullAddressFormatted = `${street}, ${number}${complement ? ', ' + complement : ''}, ${city}, ${state}, ${cep}`;
@@ -377,12 +375,6 @@ export default function OrderConfirmation() {
 
                   if (orderError) throw orderError;
 
-                  metaPixel.trackPurchase({
-                    value: productPrice,
-                    currency: 'BRL',
-                    content_ids: ['gummy-hair-60']
-                  });
-
                   router.push({
                     pathname: '/payment',
                     params: {
@@ -440,12 +432,6 @@ export default function OrderConfirmation() {
                     .maybeSingle();
 
                   if (orderError) throw orderError;
-
-                  metaPixel.trackPurchase({
-                    value: productPrice,
-                    currency: 'BRL',
-                    content_ids: ['gummy-hair-60']
-                  });
 
                   router.push({
                     pathname: '/payment',

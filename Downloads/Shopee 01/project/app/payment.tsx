@@ -415,7 +415,7 @@ export default function Payment() {
             <View style={styles.pixSection}>
               <View style={styles.pixHeader}>
                 <Image
-                  source={require('@/assets/images/20250919160711_logo-pix-icone-1024.png')}
+                  source={require('@/assets/images/20250919160711_logo-pix-icone-1024 copy copy.png')}
                   style={styles.pixIcon}
                   resizeMode="contain"
                 />
