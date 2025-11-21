@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Clipboard, Image, ActivityIndicator, Modal, TextInput } from 'react-native';
-import { ArrowLeft, CheckCircle, Info, CreditCard as CreditCardIcon, ShieldCheck } from 'lucide-react-native';
+import { ArrowLeft, CheckCircle, Info, CreditCard as CreditCardIcon, ShieldCheck, Mail, Package } from 'lucide-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { createClient } from '@supabase/supabase-js';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -224,9 +224,46 @@ export default function Payment() {
               </View>
               <View style={styles.successDetailDivider} />
               <View style={styles.successDetailRow}>
+                <Text style={styles.successDetailLabel}>Método de Pagamento</Text>
+                <View style={styles.paymentMethodBadge}>
+                  {paymentMethod === 'pix' ? (
+                    <Image
+                      source={require('@/assets/images/10.png')}
+                      style={styles.paymentMethodIcon}
+                      resizeMode="contain"
+                    />
+                  ) : (
+                    <CreditCardIcon color="#333" size={16} />
+                  )}
+                  <Text style={styles.paymentMethodText}>
+                    {paymentMethod === 'pix' ? 'Pix' : 'Cartão de Crédito'}
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.successDetailDivider} />
+              <View style={styles.successDetailRow}>
                 <Text style={styles.successDetailLabel}>Valor Pago</Text>
                 <Text style={styles.successDetailValuePrice}>R$ {productPrice.toFixed(2).replace('.', ',')}</Text>
               </View>
+            </View>
+
+            <View style={styles.trackingNoticeCard}>
+              <View style={styles.trackingIconContainer}>
+                <Mail color="#FF6B35" size={24} />
+              </View>
+              <View style={styles.trackingTextContainer}>
+                <Text style={styles.trackingTitle}>Fique atento ao seu e-mail!</Text>
+                <Text style={styles.trackingMessage}>
+                  Enviaremos o código de rastreio assim que seu pedido for enviado.
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.shippingInfoCard}>
+              <Package color="#4CAF50" size={20} />
+              <Text style={styles.shippingInfoText}>
+                Seu pedido será enviado em até 24 horas úteis
+              </Text>
             </View>
 
             <TouchableOpacity
@@ -415,7 +452,7 @@ export default function Payment() {
             <View style={styles.pixSection}>
               <View style={styles.pixHeader}>
                 <Image
-                  source={require('@/assets/images/20250919160711_logo-pix-icone-1024 copy copy.png')}
+                  source={require('@/assets/images/10.png')}
                   style={styles.pixIcon}
                   resizeMode="contain"
                 />
@@ -881,6 +918,81 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  paymentMethodBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 6,
+  },
+  paymentMethodIcon: {
+    width: 16,
+    height: 16,
+  },
+  paymentMethodText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '600',
+  },
+  trackingNoticeCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 16,
+    padding: 20,
+    width: '100%',
+    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 16,
+    borderLeftWidth: 4,
+    borderLeftColor: '#FF6B35',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+  },
+  trackingIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#FFF4F0',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trackingTextContainer: {
+    flex: 1,
+  },
+  trackingTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 6,
+  },
+  trackingMessage: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 20,
+  },
+  shippingInfoCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 12,
+    padding: 16,
+    width: '100%',
+    marginBottom: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(76, 175, 80, 0.3)',
+  },
+  shippingInfoText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+    flex: 1,
   },
   modalOverlay: {
     flex: 1,

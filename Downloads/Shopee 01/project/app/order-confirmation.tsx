@@ -2,11 +2,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Image, 
 import { ArrowLeft, MapPin, Package, Truck, CreditCard, Info } from 'lucide-react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from '@/lib/supabase';
+import { trackPurchase } from '@/lib/metaPixel';
 
 export default function OrderConfirmation() {
   const router = useRouter();
@@ -76,7 +73,11 @@ export default function OrderConfirmation() {
 
           <View style={styles.productRow}>
             <Image
-              source={require('@/assets/images/br-11134207-81z1k-mgcf9ald0pvrcd.webp')}
+              source={
+                productFlavor === 'Morango' ? require('@/assets/images/morango.png') :
+                productFlavor === 'Melancia' ? require('@/assets/images/melancia.png') :
+                require('@/assets/images/macaverde.png')
+              }
               style={styles.productImage}
               resizeMode="cover"
             />
@@ -163,7 +164,7 @@ export default function OrderConfirmation() {
           >
             <View style={styles.pixIconContainer}>
               <Image
-                source={require('@/assets/images/20250919160711_logo-pix-icone-1024 copy.png')}
+                source={require('@/assets/images/10.png')}
                 style={styles.pixLogo}
                 resizeMode="contain"
               />
@@ -375,6 +376,8 @@ export default function OrderConfirmation() {
 
                   if (orderError) throw orderError;
 
+                  trackPurchase(productPrice, orderData.id);
+
                   router.push({
                     pathname: '/payment',
                     params: {
@@ -432,6 +435,8 @@ export default function OrderConfirmation() {
                     .maybeSingle();
 
                   if (orderError) throw orderError;
+
+                  trackPurchase(productPrice, orderData.id);
 
                   router.push({
                     pathname: '/payment',

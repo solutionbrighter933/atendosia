@@ -1,13 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, useWindowDimensions, Platform, Image, Modal, Pressable, Linking } from 'react-native';
 import { ArrowLeft, ShoppingCart, MoveVertical as MoreVertical, Heart, Truck, ChevronRight, Star, ChevronUp, ChevronDown, MessageCircle, Play, CircleCheck as CheckCircle, X, ThumbsUp } from 'lucide-react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { createClient } from '@supabase/supabase-js';
-import { useCallback } from 'react';
-
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+import { supabase } from '@/lib/supabase';
+import { trackViewContent, trackAddToCart } from '@/lib/metaPixel';
 
 const getSessionId = () => {
   if (typeof window !== 'undefined') {
@@ -24,10 +20,10 @@ const getSessionId = () => {
 const FLAVORS = ['Morango', 'Melancia', 'Maçã Verde'];
 
 const PRODUCT_IMAGES = [
-  require('@/assets/images/br-11134207-81z1k-mgcf9ald0pvrcd.webp'),
-  require('@/assets/images/br-11134207-81z1k-mgcf9alczbbb80.webp'),
-  require('@/assets/images/br-11134207-81z1k-mgcf9ald3j0n54.webp'),
-  require('@/assets/images/br-11134207-7r98o-m2ba0e8a58w6ec.webp'),
+  require('@/assets/images/morango.png'),
+  require('@/assets/images/melancia.png'),
+  require('@/assets/images/macaverde.png'),
+  require('@/assets/images/ficha.png'),
 ];
 
 const PRODUCT_VIDEO = 'https://down-cvs-br.vod.susercontent.com/api/v4/11110105/mms/br-11110105-6kfkq-m3xmjjl78qwl4f.16000081734531550.mp4';
@@ -52,6 +48,7 @@ export default function ProductLanding() {
     useCallback(() => {
       loadCartCount();
       loadReviewLikes();
+      trackViewContent('Suplemento Alimentar Gummy Hair - 60 Unidades', 19.87);
     }, [])
   );
 
@@ -86,6 +83,7 @@ export default function ProductLanding() {
 
       if (error) throw error;
       await loadCartCount();
+      trackAddToCart('Suplemento Alimentar Gummy Hair - 60 Unidades', 19.87, 1);
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
@@ -220,7 +218,7 @@ export default function ProductLanding() {
       <View style={[styles.container, isDesktop && { width: maxWidth, alignSelf: 'center' }]}>
         <TouchableOpacity style={styles.logoHeader} onPress={() => Linking.openURL('https://shopee.com.br/web')}>
           <Image
-            source={require('@/assets/images/joigfjboigj copy.jpg')}
+            source={require('@/assets/images/black.png')}
             style={styles.logoImage}
             resizeMode="cover"
           />
@@ -262,7 +260,7 @@ export default function ProductLanding() {
             </ScrollView>
             <View style={styles.freightBadge}>
               <Image
-                source={require('@/assets/images/1(1).png')}
+                source={{ uri: 'https://ykvvltnfhzbqykxcizij.supabase.co/storage/v1/object/public/produtos/1(1).png' }}
                 style={styles.freightImage}
                 resizeMode="contain"
               />
@@ -290,7 +288,7 @@ export default function ProductLanding() {
 
             <View style={styles.couponCard}>
               <Image
-                source={require('@/assets/images/dcsdjcdsjiucju.png')}
+                source={{ uri: 'https://ykvvltnfhzbqykxcizij.supabase.co/storage/v1/object/public/produtos/dcsdjcdsjiucju.png' }}
                 style={styles.couponLogo}
                 resizeMode="contain"
               />
@@ -345,7 +343,7 @@ export default function ProductLanding() {
               <View style={styles.sellerLogoContainer}>
                 <View style={styles.sellerLogo}>
                   <Image
-                    source={require('../assets/images/br-11134216-7r98o-lxu42xqdszb34b_tn.webp')}
+                    source={require('@/assets/images/drogaclara.png')}
                     style={styles.drogasilLogo}
                     resizeMode="contain"
                   />
@@ -444,7 +442,7 @@ export default function ProductLanding() {
             <View style={styles.reviewCard}>
               <View style={styles.reviewHeader}>
                 <Image
-                  source={require('@/assets/images/7b0ae41737176334e6335ca7d735df5f_tn.jpeg')}
+                  source={require('@/assets/images/04.png')}
                   style={styles.reviewAvatar}
                 />
                 <View style={styles.reviewInfo}>
@@ -458,15 +456,15 @@ export default function ProductLanding() {
                     Chegou super rápido! O sabor é maravilhoso, parece bala de verdade. Já estou sentindo meu cabelo mais forte com 2 semanas de uso.
                   </Text>
                   <View style={styles.reviewImages}>
-                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/br-11134103-7r98o-m148lhgwk4uoda.webp'))}>
+                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/15.png'))}>
                       <Image
-                        source={require('@/assets/images/br-11134103-7r98o-m148lhgwk4uoda.webp')}
+                        source={require('@/assets/images/15.png')}
                         style={styles.reviewImage}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/br-11134103-7r98o-m148m4laq0y6f5.webp'))}>
+                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/16.png'))}>
                       <Image
-                        source={require('@/assets/images/br-11134103-7r98o-m148m4laq0y6f5.webp')}
+                        source={require('@/assets/images/16.png')}
                         style={styles.reviewImage}
                       />
                     </TouchableOpacity>
@@ -492,7 +490,7 @@ export default function ProductLanding() {
             <View style={styles.reviewCard}>
               <View style={styles.reviewHeader}>
                 <Image
-                  source={require('@/assets/images/br-11134233-7r98o-m30qs38x9s5x4a_tn.jpeg')}
+                  source={require('@/assets/images/22.png')}
                   style={styles.reviewAvatar}
                 />
                 <View style={styles.reviewInfo}>
@@ -511,15 +509,15 @@ export default function ProductLanding() {
                     Espero que tenho bons resultados usando.
                   </Text>
                   <View style={styles.reviewImages}>
-                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/br-11134103-7r98o-m8zbttzdacl538.webp'))}>
+                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/13.png'))}>
                       <Image
-                        source={require('@/assets/images/br-11134103-7r98o-m8zbttzdacl538.webp')}
+                        source={require('@/assets/images/13.png')}
                         style={styles.reviewImage}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/br-11134103-7r98o-m8zbttzd8y0p07.webp'))}>
+                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/14.png'))}>
                       <Image
-                        source={require('@/assets/images/br-11134103-7r98o-m8zbttzd8y0p07.webp')}
+                        source={require('@/assets/images/14.png')}
                         style={styles.reviewImage}
                       />
                     </TouchableOpacity>
@@ -549,7 +547,7 @@ export default function ProductLanding() {
             <View style={styles.reviewCard}>
               <View style={styles.reviewHeader}>
                 <Image
-                  source={require('@/assets/images/br-11134233-7r98o-lqj3vol1t2cf17_tn.jpeg')}
+                  source={require('@/assets/images/20.png')}
                   style={styles.reviewAvatar}
                 />
                 <View style={styles.reviewInfo}>
@@ -564,15 +562,15 @@ export default function ProductLanding() {
                     Chegou certinho, dentro do prazo, e muito bem embalado. O gosto é maravilhoso, é realmente muito gostosa, dá vontade de comer um monte de uma vez.
                   </Text>
                   <View style={styles.reviewImages}>
-                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/br-11134103-7r98o-m3jo0oltgmhn92.webp'))}>
+                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/11.png'))}>
                       <Image
-                        source={require('@/assets/images/br-11134103-7r98o-m3jo0oltgmhn92.webp')}
+                        source={require('@/assets/images/11.png')}
                         style={styles.reviewImage}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/br-11134103-7r98o-m3jo0oltjfmj4c.webp'))}>
+                    <TouchableOpacity onPress={() => setSelectedReviewImage(require('@/assets/images/12.png'))}>
                       <Image
-                        source={require('@/assets/images/br-11134103-7r98o-m3jo0oltjfmj4c.webp')}
+                        source={require('@/assets/images/12.png')}
                         style={styles.reviewImage}
                       />
                     </TouchableOpacity>
@@ -603,7 +601,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/prod_202108122026352122_1.png')}
+                    source={require('@/assets/images/oleo.png')}
                     style={styles.productImage}
                   />
                   <View style={styles.productDiscountBadge}>
@@ -637,7 +635,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/br-11134207-81z1k-mg6d26o6s2yo0d.jpeg')}
+                    source={require('@/assets/images/19.png')}
                     style={styles.productImage}
                   />
                   <View style={[styles.productDiscountBadge, { backgroundColor: '#FF6B6B' }]}>
@@ -674,7 +672,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/kit-cronoday-capilar-cronograma-charmelle-cosm-ticos-brasil-atacado-revenda-distribuidor-97hraxkxcw.webp')}
+                    source={require('@/assets/images/kit.png')}
                     style={styles.productImage}
                   />
                   <View style={styles.productDiscountBadge}>
@@ -708,7 +706,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/3709514.webp')}
+                    source={require('@/assets/images/06.png')}
                     style={styles.productImage}
                   />
                   <View style={[styles.productDiscountBadge, { backgroundColor: '#FF6B6B' }]}>
@@ -742,7 +740,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/colageno_verisol_dermup_90_capsulas_maxinutri_2989_1_20240207144707.webp')}
+                    source={require('@/assets/images/23.png')}
                     style={styles.productImage}
                   />
                   <View style={styles.productDiscountBadge}>
@@ -776,7 +774,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/br-11134207-7r98o-m9vplcvd5lx51a.jpeg')}
+                    source={require('@/assets/images/18.png')}
                     style={styles.productImage}
                   />
                   <View style={styles.productDiscountBadge}>
@@ -807,7 +805,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/0717fe00f09a2ef32de0e47501845889.jpeg')}
+                    source={require('@/assets/images/05.png')}
                     style={styles.productImage}
                   />
                   <View style={[styles.productDiscountBadge, { backgroundColor: '#FF6B6B' }]}>
@@ -844,7 +842,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/serum-rosa-mosqueta-frasco-copiar-r1rlx55u1p.webp')}
+                    source={require('@/assets/images/serum.png')}
                     style={styles.productImage}
                   />
                   <View style={styles.productDiscountBadge}>
@@ -875,7 +873,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/[.webp')}
+                    source={require('@/assets/images/01.png')}
                     style={styles.productImage}
                   />
                   <View style={styles.productDiscountBadge}>
@@ -909,7 +907,7 @@ export default function ProductLanding() {
               <TouchableOpacity style={styles.productCard} onPress={() => setShowDownloadPopup(true)}>
                 <View style={styles.productImageContainer}>
                   <Image
-                    source={require('@/assets/images/merheje-manicure-profissional-kit-alicate-lima-palito-espatula.webp')}
+                    source={require('@/assets/images/unha.png')}
                     style={styles.productImage}
                   />
                   <View style={[styles.productDiscountBadge, { backgroundColor: '#FF6B6B' }]}>
@@ -956,7 +954,7 @@ export default function ProductLanding() {
 
         <View style={styles.bottomBar}>
           <TouchableOpacity style={styles.bottomButton} onPress={() => router.push('/chat')}>
-            <Image source={require('@/assets/images/1(1) copy.png')} style={{ width: 20, height: 20 }} />
+            <Image source={require('@/assets/images/02.png')} style={{ width: 20, height: 20 }} />
             <Text style={styles.bottomButtonText}>Conversar agora</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.bottomButton} onPress={handleAddToCart}>
@@ -1009,7 +1007,7 @@ export default function ProductLanding() {
               onPress={() => setShowDownloadPopup(false)}
             >
               <Image
-                source={require('@/assets/images/joijjj.png')}
+                source={{ uri: 'https://ykvvltnfhzbqykxcizij.supabase.co/storage/v1/object/public/produtos/joijjj.png' }}
                 style={styles.downloadPopupImage}
                 resizeMode="contain"
               />
